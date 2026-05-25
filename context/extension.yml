@@ -1,0 +1,43 @@
+schema_version: "1.0"
+
+extension:
+  id: "context"
+  name: "Context documents"
+  version: "0.1.0"
+  description: "Structured PRD, tech stack, and design context for agents and project constitution."
+  author: "Szymon Stec"
+  repository: "https://github.com/github/spec-kit"
+  license: "MIT"
+
+requires:
+  speckit_version: ">=0.2.0"
+
+provides:
+  commands:
+    - name: speckit.context.prd
+      file: commands/speckit.context.prd.md
+      description: "Step 1: draft AI-oriented PRD to .project/context/ for constitution pipeline"
+    - name: speckit.context.tech-stack
+      file: commands/speckit.context.tech-stack.md
+      description: "Step 2: tech stack context from PRD + input; options where tradeoffs matter"
+    - name: speckit.context.design
+      file: commands/speckit.context.design.md
+      description: "Step 3 (UI only): design/UX context from PRD + user input only (not tech-stack)"
+
+  templates:
+    - name: "prd-template.md"
+      file: templates/prd-template.md
+      description: "Skeleton for the PRD"
+    - name: "tech-stack-template.md"
+      file: templates/tech-stack-template.md
+      description: "Skeleton for the tech stack document (incl. security principles)"
+    - name: "design-template.md"
+      file: templates/design-template.md
+      description: "Skeleton for the design document"
+
+tags:
+  - "context"
+  - "prd"
+  - "tech-stack"
+  - "design"
+  - "constitution"

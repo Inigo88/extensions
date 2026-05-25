@@ -1,0 +1,87 @@
+schema_version: "1.0"
+
+extension:
+  id: "backlog"
+  name: "Product Backlog"
+  version: "1.0.2"
+  description: "Markdown backlog: milestones, epics, features, aggregated statuses for Spec Kit."
+  author: "spec-kit-core"
+  repository: "https://github.com/github/spec-kit"
+  license: "MIT"
+
+requires:
+  speckit_version: ">=0.2.0"
+  tools:
+    - name: python
+      required: true
+      version: ">=3.8"
+
+provides:
+  commands:
+    - name: speckit.backlog.create
+      file: commands/speckit.backlog.create.md
+      description: "Create a product backlog from a natural-language product description"
+    - name: speckit.backlog.update
+      file: commands/speckit.backlog.update.md
+      description: "Recompute aggregated statuses across the backlog"
+    - name: speckit.backlog.add-feature
+      file: commands/speckit.backlog.add-feature.md
+      description: "Place a new Feature (existing or new Epic/Milestone when enabled), update body + dashboard, then refresh aggregation"
+    - name: speckit.backlog.detail-feature
+      file: commands/speckit.backlog.detail-feature.md
+      description: "Interactively extend one Feature description with Why, What, Acceptance Criteria, and Open Questions (concise)"
+
+  templates:
+    - name: "backlog-template.md"
+      file: templates/backlog-template.md
+      description: "Backlog Markdown template used by /speckit.backlog.create"
+
+  config:
+    - name: "backlog-config.yml"
+      template: "config-template.yml"
+      description: "Backlog status catalog, priority catalog, hierarchy levels, and event mapping"
+      required: false
+
+hooks:
+  after_specify:
+    command: speckit.backlog.update
+    optional: true
+    prompt: "Recompute backlog statuses after specification?"
+    description: "Refresh aggregated statuses after a feature is specified"
+  after_clarify:
+    command: speckit.backlog.update
+    optional: true
+    prompt: "Recompute backlog statuses after clarification?"
+    description: "Refresh aggregated statuses after a feature is clarified"
+  after_plan:
+    command: speckit.backlog.update
+    optional: true
+    prompt: "Recompute backlog statuses after planning?"
+    description: "Refresh aggregated statuses after a feature is planned"
+  after_tasks:
+    command: speckit.backlog.update
+    optional: true
+    prompt: "Recompute backlog statuses after task generation?"
+    description: "Refresh aggregated statuses after tasks are generated for a feature"
+  after_analyze:
+    command: speckit.backlog.update
+    optional: true
+    prompt: "Recompute backlog statuses after analysis?"
+    description: "Refresh aggregated statuses after a feature is analyzed"
+  after_implement:
+    command: speckit.backlog.update
+    optional: true
+    prompt: "Recompute backlog statuses after implementation?"
+    description: "Refresh aggregated statuses after a feature is implemented"
+
+tags:
+  - "backlog"
+  - "planning"
+  - "workflow"
+  - "aggregation"
+
+config:
+  defaults:
+    file_pattern: "*-backlog.md"
+    levels_milestones: true
+    levels_epics: true

@@ -1,0 +1,24 @@
+schema_version: "1.0"
+
+extension:
+  id: project
+  name: "Project layout"
+  version: "1.0.0"
+  description: "Create standard .project/ directory tree at repository root"
+  author: spec-kit-core
+  repository: https://github.com/github/spec-kit
+  license: MIT
+
+requires:
+  speckit_version: ">=0.2.0"
+
+provides:
+  commands:
+    - name: speckit.project.setup
+      file: commands/speckit.project.setup.md
+      description: "Create .project/ with assets, backlog, context, documents, crs, and bugs"
+
+tags:
+  - "project"
+  - "layout"
+  - "workspace"

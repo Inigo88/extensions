@@ -1,0 +1,53 @@
+schema_version: "1.0"
+
+extension:
+  id: "bugs"
+  name: "Bug registry"
+  version: "1.0.2"
+  description: "Register bugs in Markdown, triage open items, and run a structured fix workflow with registry sync."
+  author: "spec-kit-core"
+  repository: "https://github.com/github/spec-kit"
+  license: "MIT"
+
+requires:
+  speckit_version: ">=0.2.0"
+  tools:
+    - name: python
+      required: true
+      version: ">=3.8"
+
+provides:
+  commands:
+    - name: speckit.bugs.register
+      file: commands/speckit.bugs.register.md
+      description: "Create a bug file and registry row from a title and optional feature scope"
+    - name: speckit.bugs.triage
+      file: commands/speckit.bugs.triage.md
+      description: "Review open bugs, set severity and status, and keep the registry table in sync"
+    - name: speckit.bugs.fix
+      file: commands/speckit.bugs.fix.md
+      description: "Investigate, plan, implement, verify, and resolve a bug with approval gate when needed"
+
+  templates:
+    - name: "bug-template.md"
+      file: templates/bug-template.md
+      description: "Single-bug Markdown report (status, severity, reproduction, fix plan, verification)"
+    - name: "bug-report-registry-template.md"
+      file: templates/bug-report-registry-template.md
+      description: "Project-wide bug registry with per-feature tables and summary header"
+
+  config:
+    - name: "bugs-config.yml"
+      template: "config-template.yml"
+      description: "Paths, status labels, and workflow toggles for the bugs extension"
+      required: false
+
+tags:
+  - "bugs"
+  - "quality"
+  - "workflow"
+
+config:
+  defaults:
+    data_dir: ".project/bugs"
+    registry_filename: "bug-report.md"

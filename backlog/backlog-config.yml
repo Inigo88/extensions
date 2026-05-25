@@ -1,0 +1,156 @@
+# Product Backlog Extension Configuration
+
+# -----------------------------------------------------------------------------
+# Backlog file discovery
+# -----------------------------------------------------------------------------
+
+# Auto-discovery: `file_pattern` is matched under each root in `backlog_roots` (in order);
+# first root with at least one match wins. Override with a full path when invoking commands.
+file_pattern: "*-backlog.md"
+
+# Search roots (repo-relative). Prefer `.project/backlog` (see `speckit.project.setup`); keep
+# `.specify/backlog` for legacy layouts.
+backlog_roots:
+  - ".project/backlog"
+  - ".specify/backlog"
+
+# -----------------------------------------------------------------------------
+# Hierarchy levels
+# -----------------------------------------------------------------------------
+# Features are ALWAYS present. The two parent levels above them can be toggled
+# independently to produce a flatter backlog:
+#
+#   milestones=true,  epics=true   -> Milestone > Epic > Feature   (IDs: M.E.F)
+#   milestones=false, epics=true   -> Epic > Feature               (IDs: E.F)
+#   milestones=true,  epics=false  -> Milestone > Feature          (IDs: M.F)
+#   milestones=false, epics=false  -> Flat list of Features        (IDs: F)
+#
+# When a level is disabled, /speckit.backlog.create skips its headings and the
+# matching dashboard sub-tables, and /speckit.backlog.update skips roll-up there.
+levels:
+  milestones: true
+  epics: true
+
+# -----------------------------------------------------------------------------
+# Status catalogs
+# -----------------------------------------------------------------------------
+# Two parallel catalogs:
+#   feature_statuses  - allowed values for `**Status**:` on a Feature
+#   parent_statuses   - allowed values for `**Status**:` on an Epic or Milestone
+#                       (epics and milestones always share the same set)
+#
+# Each entry:
+#   id        : canonical string written to the backlog (`**Status**: <id>`)
+#   display   : rendered string inside Project Dashboard cells (backtick-wrapped); emojis allowed
+#   aggregate : roll-up role. For feature_statuses: how the Feature contributes to its parent.
+#               For parent_statuses: Epic→Milestone roll-up and which row matches each computed role.
+#               One of:
+#                   "initial"          - default for new items; treated as not started in aggregation
+#                   "in_progress"      - moves the parent to the configured in-progress parent status
+#                   "blocked"          - parent becomes blocked when ALL children are blocked
+#                   "final_cancelled"  - parent cancelled when ALL children are final_cancelled
+#                   "final_done"       - terminal success; parent done when all children are
+#                                        final_done, or mixed final_done/final_cancelled with ≥1 final_done
+#
+# A status id MAY appear in both lists; the lists are independent and `display` may differ per list.
+
+feature_statuses:
+  - id: "Backlog"
+    display: "⚪ Backlog"
+    aggregate: "initial"
+  - id: "Specified"
+    display: "🔵 Specified"
+    aggregate: "in_progress"
+  - id: "Clarified"
+    display: "🔵 Clarified"
+    aggregate: "in_progress"
+  - id: "Planned"
+    display: "🔵 Planned"
+    aggregate: "in_progress"
+  - id: "Tasked"
+    display: "🔵 Tasked"
+    aggregate: "in_progress"
+  - id: "Analyzed"
+    display: "🔵 Analyzed"
+    aggregate: "in_progress"
+  - id: "Implemented"
+    display: "🟢 Implemented"
+    aggregate: "final_done"
+  - id: "Blocked"
+    display: "🔴 Blocked"
+    aggregate: "blocked"
+  - id: "Cancelled"
+    display: "⚪ Cancelled"
+    aggregate: "final_cancelled"
+
+parent_statuses:
+  - id: "Backlog"
+    display: "⚪ Backlog"
+    aggregate: "initial"
+  - id: "In progress"
+    display: "🟡 In progress"
+    aggregate: "in_progress"
+  - id: "Blocked"
+    display: "🔴 Blocked"
+    aggregate: "blocked"
+  - id: "Cancelled"
+    display: "⚪ Cancelled"
+    aggregate: "final_cancelled"
+  - id: "Done"
+    display: "🟢 Done"
+    aggregate: "final_done"
+
+# -----------------------------------------------------------------------------
+# Priority catalog
+# -----------------------------------------------------------------------------
+# Allowed values for `**Priority**:` on Milestones, Epics, and Features. Priority is
+# per-item and is NOT aggregated upward; backlog.update mirrors each value into the
+# Project Dashboard (edit the source-of-truth field; the dashboard regenerates on update).
+#
+# Each entry: id = canonical backlog string (`**Priority**: <id>`); display = dashboard cell text.
+
+priorities:
+  - id: "High"
+    display: "High"
+  - id: "Medium"
+    display: "Medium"
+  - id: "Low"
+    display: "Low"
+
+# -----------------------------------------------------------------------------
+# Hook event mapping
+# -----------------------------------------------------------------------------
+# Each Spec Kit hook event maps to Feature status promotion. For `/speckit.backlog.update --event <name>`:
+#   1. Look up the event below; if `enabled: false` or the key is missing, skip promotion (aggregation still runs).
+#   2. Find the Feature whose **Branch** matches the current git branch (override with --feature / --branch).
+#   3. Write `set_status` to `**Status**:`; if `set_branch: true`, also write **Branch** (typical for after_specify).
+#   4. Re-aggregate Epic and Milestone statuses for whichever levels are enabled.
+#
+# Set `enabled: false` to disable status promotion for an individual event while keeping aggregation.
+# Remove the section entirely to disable both.
+events:
+  after_specify:
+    enabled: true
+    set_status: "Specified"
+    set_branch: true
+  after_clarify:
+    enabled: true
+    set_status: "Clarified"
+    set_branch: false
+  after_plan:
+    enabled: true
+    set_status: "Planned"
+    set_branch: false
+  after_tasks:
+    enabled: true
+    set_status: "Tasked"
+    set_branch: false
+  after_analyze:
+    enabled: true
+    set_status: "Analyzed"
+    set_branch: false
+  after_implement:
+    enabled: true
+    set_status: "Implemented"
+    set_branch: false
+

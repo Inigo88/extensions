@@ -1,0 +1,13 @@
+# OS / editor
+.DS_Store
+**/.DS_Store
+Thumbs.db
+
+# Editor swap / backup
+*.swp
+*.swo
+*~
+
+# Local env or secrets (if any tooling is added later)
+.env
+.env.*

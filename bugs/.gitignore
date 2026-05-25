@@ -1,0 +1,19 @@
+# OS / editor
+.DS_Store
+**/.DS_Store
+Thumbs.db
+
+# Editor swap / backup
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+
+# Local env or secrets
+.env
+.env.*

@@ -1,0 +1,53 @@
+schema_version: "1.0"
+
+extension:
+  id: "change-requests"
+  name: "Change request registry"
+  version: "1.0.0"
+  description: "Create change requests from a template, keep a project registry in sync, and run a structured implementation workflow."
+  author: "spec-kit-core"
+  repository: "https://github.com/github/spec-kit"
+  license: "MIT"
+
+requires:
+  speckit_version: ">=0.2.0"
+  tools:
+    - name: python
+      required: true
+      version: ">=3.8"
+
+provides:
+  commands:
+    - name: speckit.change-requests.register
+      file: commands/speckit.change-requests.register.md
+      description: "Create a change request file from the template and append a row to the project registry"
+    - name: speckit.change-requests.implement
+      file: commands/speckit.change-requests.implement.md
+      description: "Plan, implement, verify, and complete a change request with an optional approval gate"
+    - name: speckit.change-requests.sync-registry
+      file: commands/speckit.change-requests.sync-registry.md
+      description: "Scan change request files on disk and register any CR ids missing from the aggregate registry"
+
+  templates:
+    - name: "change-request-template.md"
+      file: templates/change-request-template.md
+      description: "Single change request Markdown (status, rationale, scope, implementation plan, verification)"
+    - name: "change-request-registry-template.md"
+      file: templates/change-request-registry-template.md
+      description: "Project-wide change request registry with per-feature tables and summary header"
+
+  config:
+    - name: "change-requests-config.yml"
+      template: "config-template.yml"
+      description: "Paths, status labels, and workflow toggles for the change-requests extension"
+      required: false
+
+tags:
+  - "change-requests"
+  - "workflow"
+  - "governance"
+
+config:
+  defaults:
+    data_dir: ".project/change-requests"
+    registry_filename: "change-request-report.md"
